@@ -21,7 +21,7 @@ export default function TabLayout() {
     <SafeAreaProvider>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+          tabBarActiveTintColor: Colors[colorScheme ?? "dark"].tint,
           headerShown: false,
         }}
       >
