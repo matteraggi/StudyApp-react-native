@@ -9,7 +9,9 @@ import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { Style } from "nativewind/dist/style-sheet/runtime";
-import './input.css'; // Tell webpack that Button.js uses these styles
+import "./input.css"; // Tell webpack that Button.js uses these styles
+import { MoneyContextProvider } from "../context/money.context";
+import { AnimalContextProvider } from "../context/animals.context";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -53,9 +55,13 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
+      <MoneyContextProvider>
+        <AnimalContextProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          </Stack>
+        </AnimalContextProvider>
+      </MoneyContextProvider>
     </ThemeProvider>
   );
 }

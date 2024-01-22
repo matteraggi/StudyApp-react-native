@@ -6,7 +6,7 @@ import Homepage from "../../components/Homepage";
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Homepage />
+      <Homepage/>
     </View>
   );
 }
@@ -16,11 +16,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: 25,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+    paddingTop: 15,
+    backgroundColor: "#813405"
   },
 });

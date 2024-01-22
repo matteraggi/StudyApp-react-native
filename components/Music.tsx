@@ -1,22 +1,26 @@
+import React from "react";
 import { StyleSheet } from "react-native";
+import { Text, View } from "./Themed";
 
-import { Text, View } from "../../components/Themed";
-import Shop from "../../components/Shop";
-
-export default function TabOneScreen() {
+const Music = () => {
   return (
     <View style={styles.container}>
-      <Shop />
+      <Text style={styles.title}>Music</Text>
     </View>
   );
-}
+};
+
+export default Music;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "flex-start",
-    paddingTop: 15,
     backgroundColor: "#813405",
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: "700",
+    color: "#fff",
   },
 });
