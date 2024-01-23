@@ -1,9 +1,11 @@
 import React, { useRef, useState } from "react";
-import { StyleSheet } from "react-native";
-import { View } from "./Themed";
+import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View } from "./Themed";
 import { MoneyContext } from "../context/money.context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AnimalsDisplayed from "./AnimalsDisplayed";
+import ArrowUp from "../assets/icons/ArrowUp";
+import ArrowDown from "../assets/icons/ArrowDown";
 
 const Timer = () => {
   const [hours, setHours] = useState(0);
@@ -117,6 +119,7 @@ const Timer = () => {
   };
 
   const decreaseTimer = () => {
+    console.log("pressed");
     if (finished) {
       setMinutes((prevTime) => {
         return prevTime - 5;
@@ -140,70 +143,78 @@ const Timer = () => {
   return (
     <View style={styles.buttonContainer}>
       <View style={styles.timer}>
-        <p onClick={increaseTimer}>
-          <img
-            src="../assets/icons/ArrowUp.svg"
-            width={45}
-            style={styles.arrowleft}
-          />
-        </p>
-        <h3 style={styles.timerStyle}>
-          {hours === 0 && "00"}
-          {hours === 1 && "01"}
-          {hours === 2 && "02"}
-          {hours === 3 && "03"}
-          {hours === 4 && "04"}
-          {hours === 5 && "05"}
-          {hours === 6 && "06"}
-          {hours === 7 && "07"}
-          {hours === 8 && "08"}
-          {hours === 9 && "09"}
-          {hours > 9 && hours}:{minutes === 0 && "00"}
-          {minutes === 1 && "01"}
-          {minutes === 2 && "02"}
-          {minutes === 3 && "03"}
-          {minutes === 4 && "04"}
-          {minutes === 5 && "05"}
-          {minutes === 6 && "06"}
-          {minutes === 7 && "07"}
-          {minutes === 8 && "08"}
-          {minutes === 9 && "09"}
-          {minutes > 9 && minutes}:{seconds === 0 && "00"}
-          {seconds === 1 && "01"}
-          {seconds === 2 && "02"}
-          {seconds === 3 && "03"}
-          {seconds === 4 && "04"}
-          {seconds === 5 && "05"}
-          {seconds === 6 && "06"}
-          {seconds === 7 && "07"}
-          {seconds === 8 && "08"}
-          {seconds === 9 && "09"}
-          {seconds > 9 && seconds}
-        </h3>
-        <p onClick={decreaseTimer}>
-          <img
-            src="../assets/icons/ArrowDown.svg"
-            width={45}
-            style={styles.arrowright}
-          />
-        </p>
+        <Pressable onPress={() => increaseTimer}>
+          <ArrowUp style={styles.arrowleft} />
+        </Pressable>
+        <Text style={styles.timerStyle}>
+          {hours === 0 ? "00" : null}
+          {hours === 1 ? "01" : null}
+          {hours === 2 ? "02" : null}
+          {hours === 3 ? "03" : null}
+          {hours === 4 ? "04" : null}
+          {hours === 5 ? "05" : null}
+          {hours === 6 ? "06" : null}
+          {hours === 7 ? "07" : null}
+          {hours === 8 ? "08" : null}
+          {hours === 9 ? "09" : null}
+          {hours > 9 ? hours : null}:{minutes === 0 ? "00" : null}
+          {minutes === 1 ? "01" : null}
+          {minutes === 2 ? "02" : null}
+          {minutes === 3 ? "03" : null}
+          {minutes === 4 ? "04" : null}
+          {minutes === 5 ? "05" : null}
+          {minutes === 6 ? "06" : null}
+          {minutes === 7 ? "07" : null}
+          {minutes === 8 ? "08" : null}
+          {minutes === 9 ? "09" : null}
+          {minutes > 9 ? minutes : null}:{seconds === 0 ? "00" : null}
+          {seconds === 1 ? "01" : null}
+          {seconds === 2 ? "02" : null}
+          {seconds === 3 ? "03" : null}
+          {seconds === 4 ? "04" : null}
+          {seconds === 5 ? "05" : null}
+          {seconds === 6 ? "06" : null}
+          {seconds === 7 ? "07" : null}
+          {seconds === 8 ? "08" : null}
+          {seconds === 9 ? "09" : null}
+          {seconds > 9 ? seconds : null}
+        </Text>
+        <Pressable onPress={() => decreaseTimer}>
+          <ArrowDown style={styles.arrowright} />
+        </Pressable>
       </View>
       <AnimalsDisplayed />
       {finished ? (
-        <img src="../assets/images/cibo-finito.png" width={150} />
+        <Image
+          source={require("../assets/images/cibo-finito.png")}
+          style={styles.foodContainer}
+        />
       ) : (
-        <img src="../assets/images/cibo-pieno.png" width={150} />
-      )}
-      {finished && (
-        <button onClick={startTimer} style={styles.button}>
+        <Image
+          source={require("../assets/images/cibo-pieno.png")}
+          style={styles.foodContainer}
+        />
+        )}
+      {finished ? (
+        <Text
+          onPress={() => {
+            startTimer;
+          }}
+          style={styles.button}
+        >
           Start
-        </button>
-      )}
-      {!finished && (
-        <button onClick={resetTimer} style={styles.button}>
+        </Text>
+      ) : null}
+      {!finished ? (
+        <Text
+          onPress={() => {
+            resetTimer;
+          }}
+          style={styles.button}
+        >
           Reset
-        </button>
-      )}
+        </Text>
+      ) : null}
     </View>
   );
 };
@@ -211,6 +222,15 @@ const Timer = () => {
 export default Timer;
 
 const styles = StyleSheet.create({
+  foodContainer:{
+    flexDirection: "row",
+    verticalAlign: "middle",
+    marginTop: 8,
+    marginRight: 10,
+    resizeMode: "contain",
+    width: 60,
+    height: 60,
+  },
   timerStyle: {
     fontSize: 30,
     fontWeight: "bold",
@@ -244,13 +264,24 @@ const styles = StyleSheet.create({
     color: "black",
   },
   arrowleft: {
+    flexDirection: "row",
     verticalAlign: "middle",
     marginTop: 8,
     marginRight: 10,
+    resizeMode: "contain",
+    width: 60,
+    height: 60,
   },
   arrowright: {
+    flexDirection: "row",
     verticalAlign: "middle",
     marginTop: 8,
     marginLeft: 10,
+    resizeMode: "contain",
+    width: 30,
+    height: 30,
+  },
+  arrowView: {
+    backgroundColor: "transparent",
   },
 });

@@ -1,11 +1,11 @@
 import { StyleSheet } from "react-native";
-import { Text, View } from "../../components/Themed";
-import Shop from "../../components/Shop";
+import { View } from "../../components/Themed";
+import Music from "../../components/Music";
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Shop />
+      <Music />
     </View>
   );
 }
