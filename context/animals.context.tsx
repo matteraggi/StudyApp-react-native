@@ -10,7 +10,7 @@ export const AnimalContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [animal, setAnimal] = useState<string>("favicon");
+  const [animal, setAnimal] = useState<string>("labrador-il-classico");
 
   return (
     <AnimalContext.Provider value={{ animal, setAnimal }}>

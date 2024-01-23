@@ -143,9 +143,9 @@ const Timer = () => {
   return (
     <View style={styles.buttonContainer}>
       <View style={styles.timer}>
-        <Pressable onPress={() => increaseTimer}>
+        <TouchableOpacity onPress={increaseTimer}>
           <ArrowUp style={styles.arrowleft} />
-        </Pressable>
+        </TouchableOpacity>
         <Text style={styles.timerStyle}>
           {hours === 0 ? "00" : null}
           {hours === 1 ? "01" : null}
@@ -179,41 +179,33 @@ const Timer = () => {
           {seconds === 9 ? "09" : null}
           {seconds > 9 ? seconds : null}
         </Text>
-        <Pressable onPress={() => decreaseTimer}>
+        <TouchableOpacity onPress={decreaseTimer}>
           <ArrowDown style={styles.arrowright} />
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <AnimalsDisplayed />
-      {finished ? (
-        <Image
-          source={require("../assets/images/cibo-finito.png")}
-          style={styles.foodContainer}
-        />
-      ) : (
-        <Image
-          source={require("../assets/images/cibo-pieno.png")}
-          style={styles.foodContainer}
-        />
+      <View style={styles.trasparentView}>
+        {finished ? (
+          <Image
+            source={require("../assets/images/cibo-finito.png")}
+            style={{ width: 150, height: 150 }}
+          />
+        ) : (
+          <Image
+            source={require("../assets/images/cibo-pieno.png")}
+            style={{ width: 150, height: 150 }}
+          />
         )}
+      </View>
       {finished ? (
-        <Text
-          onPress={() => {
-            startTimer;
-          }}
-          style={styles.button}
-        >
-          Start
-        </Text>
+        <TouchableOpacity onPress={startTimer} style={styles.button}>
+          <Text style={styles.text}>Start</Text>
+        </TouchableOpacity>
       ) : null}
       {!finished ? (
-        <Text
-          onPress={() => {
-            resetTimer;
-          }}
-          style={styles.button}
-        >
-          Reset
-        </Text>
+        <TouchableOpacity onPress={resetTimer} style={styles.button}>
+          <Text style={styles.text}>Reset</Text>
+        </TouchableOpacity>
       ) : null}
     </View>
   );
@@ -222,15 +214,6 @@ const Timer = () => {
 export default Timer;
 
 const styles = StyleSheet.create({
-  foodContainer:{
-    flexDirection: "row",
-    verticalAlign: "middle",
-    marginTop: 8,
-    marginRight: 10,
-    resizeMode: "contain",
-    width: 60,
-    height: 60,
-  },
   timerStyle: {
     fontSize: 30,
     fontWeight: "bold",
@@ -247,7 +230,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     marginTop: 2,
-    width: 300,
     backgroundColor: "#813405",
   },
   button: {
@@ -269,8 +251,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginRight: 10,
     resizeMode: "contain",
-    width: 60,
-    height: 60,
+    zIndex: 100,
   },
   arrowright: {
     flexDirection: "row",
@@ -278,10 +259,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginLeft: 10,
     resizeMode: "contain",
-    width: 30,
-    height: 30,
+    zIndex: 100,
   },
-  arrowView: {
+  trasparentView: {
     backgroundColor: "transparent",
   },
+  text:{
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "black",
+  }
 });

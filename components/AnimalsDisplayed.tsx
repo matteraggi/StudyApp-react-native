@@ -5,19 +5,27 @@ import { View } from "./Themed";
 
 const AnimalsDisplayed = () => {
   const { animal, setAnimal } = React.useContext(AnimalContext);
-  const url = `../assets/images/labrador-il-classico.png`;
   return (
     <View style={styles.bg}>
-      <Image
-        source={require(url)}
-        alt={animal}
-        style={{
-          flex: 1,
-          resizeMode: "contain",
-          width: 300,
-          marginBottom: 150,
-        }}
-      />
+      {animal === "labrador-il-classico" ? (
+        <Image
+          source={require("../assets/images/labrador-il-classico.png")}
+          alt={animal}
+          style={{width: 300, height: 350}}
+        />
+      ) : null}
+      {animal === "carlino-il-simpatico" ? (
+        <Image
+          source={require("../assets/images/carlino-il-simpatico.png")}
+          alt={animal}
+          style={{
+            flex: 1,
+            resizeMode: "contain",
+            width: 300,
+            marginTop: -300,
+          }}
+        />
+      ) : null}
     </View>
   );
 };
@@ -27,5 +35,7 @@ export default AnimalsDisplayed;
 const styles = StyleSheet.create({
   bg: {
     backgroundColor: "transparent",
+    marginTop: 50,
+    marginBottom: 30,
   },
 });

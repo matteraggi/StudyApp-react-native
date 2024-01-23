@@ -92,10 +92,9 @@ const styles = StyleSheet.create({
     marginBottom: 200,
   },
   title: {
-    fontSize: 40,
+    fontSize: 30,
     fontWeight: "700",
     color: "#fff",
-    marginRight: 10,
   },
   item: {
     verticalAlign: "middle",
