@@ -1,63 +1,273 @@
 import React from "react";
 import {
+  Button,
   FlatList,
   Image,
+  Pressable,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
 import { Text, View } from "./Themed";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MoneyContext } from "../context/money.context";
+import { AnimalContext } from "../context/animals.context";
 type ItemData = {
   id: number;
-  url: string;
+  name: string;
   cost: number;
 };
 
 type ItemProps = {
   item: ItemData;
-  onPress: () => void;
 };
 
 const Shop = () => {
   const [selectedId, setSelectedId] = React.useState(1);
+  const { money, setMoney } = React.useContext(MoneyContext);
+  const { animal, setAnimal } = React.useContext(AnimalContext);
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("money");
+      if (value !== null) {
+        setMoney(JSON.parse(value));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const storeData = async (value: number) => {
+    try {
+      await AsyncStorage.setItem("money", JSON.stringify(value));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  React.useEffect(() => {
+    getData();
+  }, []);
 
   const DATA: ItemData[] = [
     {
       id: 1,
-      url: "../assets/images/labrador-il-classico.png",
+      name: "labrador-il-classico",
       cost: 0,
     },
     {
       id: 2,
-      url: "../assets/images/golden-retriever-cucciolo.png",
+      name: "golden-retriever-cucciolo",
       cost: 25,
     },
     {
       id: 3,
-      url: "../assets/images/carlino-il-simpatico.png",
+      name: "carlino-il-simpatico",
+      cost: 35,
+    },
+    {
+      id: 4,
+      name: "pinguino-san-valentino",
       cost: 50,
+    },
+    {
+      id: 5,
+      name: "bassotto-hot-dog",
+      cost: 60,
+    },
+    {
+      id: 6,
+      name: "bulldog-bodyguard",
+      cost: 75,
+    },
+    {
+      id: 7,
+      name: "carica-dei-104",
+      cost: 104,
+    },
+    {
+      id: 8,
+      name: "carlino-lo-stile",
+      cost: 115,
+    },
+    {
+      id: 9,
+      name: "golden-retriever-cravattato",
+      cost: 130,
+    },
+    {
+      id: 10,
+      name: "king-dobermann",
+      cost: 150,
+    },
+    {
+      id: 11,
+      name: "labrador-incazzato",
+      cost: 175,
+    },
+    {
+      id: 12,
+      name: "golden-retriever-san-valentino",
+      cost: 200,
+    },
+    {
+      id: 13,
+      name: "labrador-natale",
+      cost: 215,
+    },
+    {
+      id: 14,
+      name: "shiba-inu",
+      cost: 230,
+    },
+    {
+      id: 15,
+      name: "golden-retriever-leggendario",
+      cost: 300,
     },
   ];
 
-  const Item = ({ item, onPress }: ItemProps) => (
-    <TouchableOpacity onPress={onPress}>
-      <Image source={require("../assets/images/carlino-il-simpatico.png")} alt={`dog-${item.id}`} width={250} />
-      <View style={styles.cost}>
-        <Text>{item.cost}</Text>
-        <Image source={require("../assets/images/zampa-cane.png")} width={38} />
-      </View>
-    </TouchableOpacity>
-  );
+  const Item = ({ item }: ItemProps) => {
+    const selectAnimal = () => {
+      setSelectedId(item.id);
+      setAnimal(item.name);
+    };
 
-  const renderItem = ({ item }: { item: ItemData }) => {
-    const backgroundColor = item.id === selectedId ? "none" : "#813405";
-    const backgroundImage =
-      item.id === selectedId
-        ? "radial-gradient(#813405, #ba6632, #d98857)"
-        : "none";
-    const boxShadow = item.id === selectedId ? "0 0 40px #ba6632" : "none";
-    const color = item.id === selectedId ? "#fbcb1c" : "white";
+    const buyAnimal = () => {
+      if (money >= item.cost) {
+        setMoney(money - item.cost);
+        storeData(money - item.cost);
+      }
+    };
 
-    return <Item item={item} onPress={() => setSelectedId(item.id)} />;
+    return (
+      <TouchableOpacity onPress={selectAnimal} style={styles.listItem}>
+        <View
+          style={
+            selectedId === item.id
+              ? styles.image_container_selected
+              : styles.image_container
+          }
+        >
+          {item.name === "labrador-il-classico" && (
+            <Image
+              source={require(`../assets/images/labrador-il-classico.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "golden-retriever-cucciolo" && (
+            <Image
+              source={require(`../assets/images/golden-retriever-cucciolo.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "carlino-il-simpatico" && (
+            <Image
+              source={require(`../assets/images/carlino-il-simpatico.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "pinguino-san-valentino" && (
+            <Image
+              source={require(`../assets/images/pinguino-san-valentino.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "bassotto-hot-dog" && (
+            <Image
+              source={require(`../assets/images/bassotto-hot-dog.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "bulldog-bodyguard" && (
+            <Image
+              source={require(`../assets/images/bulldog-bodyguard.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "carica-dei-104" && (
+            <Image
+              source={require(`../assets/images/carica-dei-104.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "carlino-lo-stile" && (
+            <Image
+              source={require(`../assets/images/carlino-lo-stile.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "golden-retriever-cravattato" && (
+            <Image
+              source={require(`../assets/images/golden-retriever-cravattato.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "golden-retriever-leggendario" && (
+            <Image
+              source={require(`../assets/images/golden-retriever-leggendario.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "golden-retriever-san-valentino" && (
+            <Image
+              source={require(`../assets/images/golden-retriever-san-valentino.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "king-dobermann" && (
+            <Image
+              source={require(`../assets/images/king-dobermann.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "labrador-incazzato" && (
+            <Image
+              source={require(`../assets/images/labrador-incazzato.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "labrador-natale" && (
+            <Image
+              source={require(`../assets/images/labrador-natale.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+          {item.name === "shiba-inu" && (
+            <Image
+              source={require(`../assets/images/shiba-inu.png`)}
+              alt={`dog-${item.id}`}
+              style={styles.image}
+            />
+          )}
+        </View>
+        <View style={styles.cost}>
+          <Text style={styles.cost_text}>{item.cost}</Text>
+          <Image
+            source={require("../assets/images/zampa-cane.png")}
+            width={38}
+          />
+          <View style={styles.button_container}>
+            <Pressable onPress={buyAnimal} style={styles.button}>
+              <Text style={styles.button_text}>Buy</Text>
+            </Pressable>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -67,9 +277,7 @@ const Shop = () => {
       <FlatList
         horizontal
         data={DATA}
-        renderItem={({ item }) => (
-          <Item item={item} onPress={() => setSelectedId(item.id)} />
-        )}
+        renderItem={({ item }) => <Item item={item} />}
         showsHorizontalScrollIndicator={false}
       />
     </View>
@@ -79,9 +287,15 @@ const Shop = () => {
 export default Shop;
 
 const styles = StyleSheet.create({
-  list: {
-    width: "100%",
-    height: "100%",
+  cost_text: {
+    color: "#fff",
+    fontSize: 30,
+    fontWeight: "700",
+  },
+  listItem: {
+    marginHorizontal: 10,
+    padding: 20,
+    alignItems: "center",
   },
   container: {
     flex: 1,
@@ -89,7 +303,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#813405",
   },
   separator: {
-    marginBottom: 200,
+    marginBottom: 120,
   },
   title: {
     fontSize: 30,
@@ -100,13 +314,52 @@ const styles = StyleSheet.create({
     verticalAlign: "middle",
     horizontalAlign: "middle",
     padding: 20,
-    marginVertical: 8,
     marginHorizontal: 8,
     borderRadius: 40,
   },
   cost: {
+    backgroundColor: "#813405",
+    gap: 10,
     flex: 1,
+    flexDirection: "row",
     justifyContent: "center",
+    marginTop: 35,
+  },
+  image: {
+    width: 350,
+    height: 350,
+    backgroundColor: "#813405",
+  },
+  image_container_selected: {
+    padding: 10,
+    borderRadius: 40,
+    borderColor: "#fff",
+    borderWidth: 4,
+    backgroundColor: "#813405",
+  },
+  image_container: {
+    padding: 10,
+    borderRadius: 40,
+    backgroundColor: "#813405",
+  },
+  button_container: {
+    backgroundColor: "#813405",
+    marginLeft: 40,
+  },
+  button: {
     alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 40,
+    elevation: 3,
+    backgroundColor: "#fff",
+  },
+  button_text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "black",
   },
 });
