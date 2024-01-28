@@ -25,11 +25,24 @@ const Shop = () => {
   const [selectedId, setSelectedId] = React.useState(1);
   const { money, setMoney } = React.useContext(MoneyContext);
   const { animal, setAnimal } = React.useContext(AnimalContext);
+  const [animalIHave, setAnimalIHave] = React.useState<number[]>([]);
+
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem("money");
       if (value !== null) {
         setMoney(JSON.parse(value));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getAnimalIHave = async () => {
+    try {
+      const value = await AsyncStorage.getItem("animalIHave");
+      if (value !== null) {
+        setAnimalIHave(JSON.parse(value));
       }
     } catch (e) {
       console.log(e);
@@ -44,8 +57,17 @@ const Shop = () => {
     }
   };
 
+  const storeBought = async (value: number[]) => {
+    try {
+      await AsyncStorage.setItem("animalIHave", JSON.stringify(value));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   React.useEffect(() => {
     getData();
+    getAnimalIHave();
   }, []);
 
   const DATA: ItemData[] = [
@@ -133,14 +155,16 @@ const Shop = () => {
     };
 
     const buyAnimal = () => {
-      if (money >= item.cost) {
+      if (money >= item.cost && !animalIHave.includes(item.id)) {
         setMoney(money - item.cost);
         storeData(money - item.cost);
+        setAnimalIHave([...animalIHave, item.id]);
+        storeBought([...animalIHave, item.id]);
       }
     };
 
     return (
-      <TouchableOpacity onPress={selectAnimal} style={styles.listItem}>
+      <View style={styles.listItem}>
         <View
           style={
             selectedId === item.id
@@ -261,12 +285,18 @@ const Shop = () => {
             width={38}
           />
           <View style={styles.button_container}>
-            <Pressable onPress={buyAnimal} style={styles.button}>
-              <Text style={styles.button_text}>Buy</Text>
-            </Pressable>
+            {animalIHave.includes(item.id) ? (
+              <Pressable onPress={selectAnimal} style={styles.button}>
+                <Text style={styles.button_text}>Select</Text>
+              </Pressable>
+            ) : (
+              <Pressable onPress={buyAnimal} style={styles.button}>
+                <Text style={styles.button_text}>Buy</Text>
+              </Pressable>
+            )}
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
@@ -296,6 +326,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     padding: 20,
     alignItems: "center",
+    backgroundColor: "#813405",
   },
   container: {
     flex: 1,
@@ -340,6 +371,8 @@ const styles = StyleSheet.create({
   image_container: {
     padding: 10,
     borderRadius: 40,
+    borderColor: "#813405",
+    borderWidth: 4,
     backgroundColor: "#813405",
   },
   button_container: {
