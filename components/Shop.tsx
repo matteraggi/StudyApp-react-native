@@ -1,11 +1,9 @@
 import React from "react";
 import {
-  Button,
   FlatList,
   Image,
   Pressable,
   StyleSheet,
-  TouchableOpacity,
 } from "react-native";
 import { Text, View } from "./Themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
