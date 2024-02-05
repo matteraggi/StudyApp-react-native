@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-} from "react-native";
+import { FlatList, Image, Pressable, StyleSheet } from "react-native";
 import { Text, View } from "./Themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MoneyContext } from "../context/money.context";
@@ -277,11 +272,16 @@ const Shop = () => {
           )}
         </View>
         <View style={styles.cost}>
-          <Text style={styles.cost_text}>{item.cost}</Text>
-          <Image
-            source={require("../assets/images/zampa-cane.png")}
-            width={38}
-          />
+          {!animalIHave.includes(item.id) && (
+            <>
+              <Text style={styles.cost_text}>{item.cost}</Text>
+              <Image
+                source={require("../assets/images/zampa-cane.png")}
+                width={38}
+                style={{ marginRight: 15 }}
+              />
+            </>
+          )}
           <View style={styles.button_container}>
             {animalIHave.includes(item.id) ? (
               <Pressable onPress={selectAnimal} style={styles.button}>
@@ -375,7 +375,6 @@ const styles = StyleSheet.create({
   },
   button_container: {
     backgroundColor: "#813405",
-    marginLeft: 40,
   },
   button: {
     alignItems: "center",

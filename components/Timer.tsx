@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, Component, useEffect } from "react";
 import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "./Themed";
 import { MoneyContext } from "../context/money.context";
@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AnimalsDisplayed from "./AnimalsDisplayed";
 import ArrowUp from "../assets/icons/ArrowUp";
 import ArrowDown from "../assets/icons/ArrowDown";
+import { Audio } from "expo-av";
 
 const Timer = () => {
   const [hours, setHours] = useState(0);
@@ -19,6 +20,30 @@ const Timer = () => {
   const [timeInterval, setTimeInterval] = useState<any>();
   const studyMinutesRef = useRef(0);
   const { money, setMoney } = React.useContext(MoneyContext);
+
+  useEffect(() => {
+    playSound();
+  }, []);
+
+  Audio.setAudioModeAsync({
+    allowsRecordingIOS: false,
+    playsInSilentModeIOS: true,
+    shouldDuckAndroid: true,
+    staysActiveInBackground: true,
+    playThroughEarpieceAndroid: false,
+  });
+
+  const playSound = async () => {
+    try {
+      const { sound: playbackObject } = await Audio.Sound.createAsync(
+        require("../assets/sounds/success.mp3"),
+        { shouldPlay: true }
+      );
+      await playbackObject.replayAsync();
+    } catch (error) {
+      console.log("error playing sound");
+    }
+  };
 
   const storeData = async (value: number) => {
     try {
@@ -72,6 +97,7 @@ const Timer = () => {
           if (finishedRef.current === false) {
             storeData(money + studyMinutesRef.current / 5);
             setMoney(money + studyMinutesRef.current / 5);
+            playSound();
             console.log(money + studyMinutesRef.current / 5);
           }
           setFinished(true);
@@ -264,9 +290,9 @@ const styles = StyleSheet.create({
   trasparentView: {
     backgroundColor: "transparent",
   },
-  text:{
+  text: {
     fontSize: 25,
     fontWeight: "bold",
     color: "black",
-  }
+  },
 });
