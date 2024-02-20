@@ -59,14 +59,14 @@ export default function Homepage() {
     <View style={styles.container}>
       <View style={styles.nav}>
         <Image
-          source={require("../assets/images/studyfactory-logo.png")}
-          width={38}
+          source={require("../assets/images/studyfarm-logo.png")}
+          width={40}
         />
         <View style={styles.money}>
           <Text style={styles.title}>{money}</Text>
           <Image
             source={require("../assets/images/zampa-cane.png")}
-            width={38}
+            width={40}
           />
         </View>
       </View>

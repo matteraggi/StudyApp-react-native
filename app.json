@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "gymbro-react-native",
-    "slug": "gymbro-react-native",
+    "name": "studyfarm-react-native",
+    "slug": "studyfarm-react-native",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

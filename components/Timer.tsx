@@ -1,12 +1,11 @@
-import React, { useRef, useState, Component, useEffect } from "react";
-import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useRef, useState } from "react";
+import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "./Themed";
 import { MoneyContext } from "../context/money.context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AnimalsDisplayed from "./AnimalsDisplayed";
-import ArrowUp from "../assets/icons/ArrowUp";
-import ArrowDown from "../assets/icons/ArrowDown";
 import { Audio } from "expo-av";
+import { SoundContext } from "../context/sound.context";
 
 const Timer = () => {
   const [hours, setHours] = useState(0);
@@ -20,10 +19,7 @@ const Timer = () => {
   const [timeInterval, setTimeInterval] = useState<any>();
   const studyMinutesRef = useRef(0);
   const { money, setMoney } = React.useContext(MoneyContext);
-
-  useEffect(() => {
-    playSound();
-  }, []);
+  const { sound, setSound } = React.useContext(SoundContext);
 
   Audio.setAudioModeAsync({
     allowsRecordingIOS: false,
@@ -48,6 +44,24 @@ const Timer = () => {
   const storeData = async (value: number) => {
     try {
       await AsyncStorage.setItem("money", JSON.stringify(value));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const storeStats = async (stats: any) => {
+    try {
+      var arrayOfStats = await AsyncStorage.getItem("stats");
+      if (arrayOfStats === null) {
+        await AsyncStorage.setItem("stats", JSON.stringify([stats]));
+        return;
+      } else {
+        var parsedArray = JSON.parse(arrayOfStats);
+        if (parsedArray) {
+          parsedArray.push(stats);
+          await AsyncStorage.setItem("stats", JSON.stringify(parsedArray));
+        }
+      }
     } catch (e) {
       console.log(e);
     }
@@ -95,9 +109,16 @@ const Timer = () => {
           hoursRef.current === 0
         ) {
           if (finishedRef.current === false) {
+            const newStats = {
+              time: studyMinutesRef.current,
+              day: new Date().toLocaleDateString(),
+            };
+            storeStats(newStats);
             storeData(money + studyMinutesRef.current / 5);
             setMoney(money + studyMinutesRef.current / 5);
-            playSound();
+            if (sound) {
+              playSound();
+            }
             console.log(money + studyMinutesRef.current / 5);
           }
           setFinished(true);
@@ -169,8 +190,11 @@ const Timer = () => {
   return (
     <View style={styles.buttonContainer}>
       <View style={styles.timer}>
-        <TouchableOpacity onPress={increaseTimer}>
-          <ArrowUp style={styles.arrowleft} />
+        <TouchableOpacity onPress={decreaseTimer}>
+          <Image
+            source={require("../assets/images/arrow-down.png")}
+            style={styles.arrowright}
+          />
         </TouchableOpacity>
         <Text style={styles.timerStyle}>
           {hours === 0 ? "00" : null}
@@ -205,8 +229,12 @@ const Timer = () => {
           {seconds === 9 ? "09" : null}
           {seconds > 9 ? seconds : null}
         </Text>
-        <TouchableOpacity onPress={decreaseTimer}>
-          <ArrowDown style={styles.arrowright} />
+
+        <TouchableOpacity onPress={increaseTimer}>
+          <Image
+            source={require("../assets/images/arrow-up.png")}
+            style={styles.arrowleft}
+          />
         </TouchableOpacity>
       </View>
       <AnimalsDisplayed />
@@ -229,7 +257,7 @@ const Timer = () => {
         </TouchableOpacity>
       ) : null}
       {!finished ? (
-        <TouchableOpacity onPress={resetTimer} style={styles.button}>
+        <TouchableOpacity onPress={resetTimer} style={styles.buttonreset}>
           <Text style={styles.text}>Reset</Text>
         </TouchableOpacity>
       ) : null}
@@ -241,7 +269,7 @@ export default Timer;
 
 const styles = StyleSheet.create({
   timerStyle: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: "bold",
     backgroundColor: "#813405",
     color: "white",
@@ -251,6 +279,7 @@ const styles = StyleSheet.create({
   timer: {
     flexDirection: "row",
     backgroundColor: "#813405",
+    height: 40,
   },
   buttonContainer: {
     flex: 1,
@@ -271,21 +300,37 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
   },
-  arrowleft: {
+  buttonreset: {
+    alignSelf: "center",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 13,
+    padding: 7,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: "red",
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "black",
+  },
+  arrowright: {
     flexDirection: "row",
-    verticalAlign: "middle",
     marginTop: 8,
     marginRight: 10,
     resizeMode: "contain",
     zIndex: 100,
+    height: 40,
+    width: 40,
   },
-  arrowright: {
+
+  arrowleft: {
     flexDirection: "row",
-    verticalAlign: "middle",
     marginTop: 8,
     marginLeft: 10,
     resizeMode: "contain",
     zIndex: 100,
+    height: 40,
+    width: 40,
   },
   trasparentView: {
     backgroundColor: "transparent",

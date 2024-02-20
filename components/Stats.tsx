@@ -1,38 +1,80 @@
 import React, { useEffect } from "react";
 import { Text, View } from "./Themed";
 import { StyleSheet } from "react-native";
-import { MoneyContext } from "../context/money.context";
+import { Calendar } from "react-native-calendars";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Stats = () => {
-  const { money, setMoney } = React.useContext(MoneyContext);
-  const [studyMinutes, setStudyMinutes] = React.useState<number>(0);
+interface Stats {
+  day: string;
+  time: number;
+}
 
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem("money");
-      if (value !== null) {
-        setMoney(JSON.parse(value));
-        convertMoneyToStudyMinutes(JSON.parse(value));
-      }
-    } catch (e) {
-      console.log(e);
+const Stats = () => {
+  const [selected, setSelected] = React.useState("");
+  const [stats, setStats] = React.useState<Stats[]>([]);
+  const [dayStudyMinutes, setDayStudyMinutes] = React.useState(0);
+
+  useEffect(() => {
+    getStats();
+  }, []);
+
+  const getStats = async () => {
+    const value = await AsyncStorage.getItem("stats");
+    if (value !== null) {
+      setStats(JSON.parse(value));
     }
   };
 
-  const convertMoneyToStudyMinutes = (moneytmp: number) => {
-    let studyMinutes = moneytmp * 5;
-    setStudyMinutes(studyMinutes);
+  const getDayStats = async (day: any) => {
+    for (var i = 0; i < stats.length; i++) {
+      const temp = stats[i].day.split("/");
+      if (
+        temp[0].toString() === day.day.toString() &&
+        temp[1].toString() === day.month.toString() &&
+        temp[2].toString() === day.year.toString()
+      ) {
+        setDayStudyMinutes(stats[i].time);
+        return;
+      } else {
+        setDayStudyMinutes(0);
+      }
+    }
   };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Stats</Text>
       <View style={styles.separator} />
+      <Calendar
+        // Customize the appearance of the calendar
+        style={{
+          height: 350,
+          width: 350,
+          backgroundColor: "#fff",
+        }}
+        // Specify the current date
+        current={"2024-02-20"}
+        // Callback that gets called when the user selects a day
+        onDayPress={(day) => {
+          setSelected(day.dateString);
+          getDayStats(day);
+        }}
+        markedDates={{
+          [selected]: {
+            selected: true,
+            disableTouchEvent: true,
+            selectedColor: "orange",
+          },
+        }}
+        enableSwipeMonths={true}
+      />
+      {dayStudyMinutes !== 0 && (
+        <View style={styles.dailystatsview}>
+          <Text style={styles.dayinfo}>{selected}</Text>
+          <Text style={styles.studyminutes}>{dayStudyMinutes}</Text>
+          <Text style={styles.subtext}>minuti di studio</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -52,5 +94,29 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "700",
     color: "#fff",
+  },
+  dayinfo: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "700",
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  studyminutes: {
+    color: "#fff",
+    fontSize: 90,
+    fontWeight: "700",
+  },
+  dailystatsview: {
+    backgroundColor: "#813405",
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  subtext: {
+    color: "#fff",
+    fontSize: 20,
+    marginTop: 20,
+    marginBottom: 50,
   },
 });

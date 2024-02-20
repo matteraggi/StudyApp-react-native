@@ -1,5 +1,5 @@
-import * as React from "react"
-import Svg, { Path } from "react-native-svg"
+import * as React from "react";
+import Svg, { Path } from "react-native-svg";
 const ArrowUp = (props) => (
   <Svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} {...props}>
     <Path
@@ -11,5 +11,5 @@ const ArrowUp = (props) => (
       d="m7.293 11.293 1.414 1.414L11 10.414V16h2v-5.586l2.293 2.293 1.414-1.414L12 6.586l-4.707 4.707z"
     />
   </Svg>
-)
-export default ArrowUp
+);
+export default ArrowUp;

@@ -6,6 +6,7 @@ const Music = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Music</Text>
+      <Text>work in progress...</Text>
     </View>
   );
 };
