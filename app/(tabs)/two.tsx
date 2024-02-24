@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
-import { Text, View } from '../../components/Themed';
-import Settings from '../../components/Settings';
+import { StyleSheet } from "react-native";
+import { Text, View } from "../../components/Themed";
+import Settings from "../../components/Settings";
 
 export default function TabTwoScreen() {
   return (
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: 70,
-    backgroundColor: "#813405"
+    paddingTop: "13%",
+    backgroundColor: "#813405",
   },
 });

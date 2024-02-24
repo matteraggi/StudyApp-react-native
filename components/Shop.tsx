@@ -4,6 +4,8 @@ import { Text, View } from "./Themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MoneyContext } from "../context/money.context";
 import { AnimalContext } from "../context/animals.context";
+import { horizontalScale, moderateScale, verticalScale } from "../metrics";
+
 type ItemData = {
   id: number;
   name: string;
@@ -355,9 +357,9 @@ const styles = StyleSheet.create({
     marginTop: 35,
   },
   image: {
-    width: 350,
-    height: 350,
     backgroundColor: "#813405",
+    height: verticalScale(300),
+    width: horizontalScale(250),
   },
   image_container_selected: {
     padding: 10,

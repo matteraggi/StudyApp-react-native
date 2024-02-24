@@ -8,7 +8,6 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
-import { Style } from "nativewind/dist/style-sheet/runtime";
 import { MoneyContextProvider } from "../context/money.context";
 import { AnimalContextProvider } from "../context/animals.context";
 import { SoundContextProvider } from "../context/sound.context";
