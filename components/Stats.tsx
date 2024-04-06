@@ -3,6 +3,7 @@ import { Text, View } from "./Themed";
 import { StyleSheet } from "react-native";
 import { Calendar } from "react-native-calendars";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { horizontalScale, verticalScale } from "../metrics";
 
 interface Stats {
   day: string;
@@ -48,8 +49,7 @@ const Stats = () => {
       <Calendar
         // Customize the appearance of the calendar
         style={{
-          height: 350,
-          width: 350,
+          width: horizontalScale(350),
           backgroundColor: "#fff",
         }}
         // Specify the current date
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#813405",
   },
   separator: {
-    marginBottom: 70,
+    marginBottom: 30,
   },
   title: {
     fontSize: 30,
@@ -97,14 +97,14 @@ const styles = StyleSheet.create({
   },
   dayinfo: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: verticalScale(20),
     fontWeight: "700",
-    marginTop: 30,
-    marginBottom: 30,
+    marginTop: verticalScale(20),
+    marginBottom: verticalScale(20),
   },
   studyminutes: {
     color: "#fff",
-    fontSize: 90,
+    fontSize: verticalScale(50),
     fontWeight: "700",
   },
   dailystatsview: {
@@ -115,8 +115,8 @@ const styles = StyleSheet.create({
   },
   subtext: {
     color: "#fff",
-    fontSize: 20,
-    marginTop: 20,
-    marginBottom: 50,
+    fontSize: verticalScale(20),
+    marginTop: verticalScale(20),
+    marginBottom: verticalScale(20),
   },
 });

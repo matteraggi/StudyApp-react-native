@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AnimalsDisplayed from "./AnimalsDisplayed";
 import { Audio } from "expo-av";
 import { SoundContext } from "../context/sound.context";
+import { verticalScale, horizontalScale } from "../metrics";
 
 const Timer = () => {
   const [hours, setHours] = useState(0);
@@ -166,7 +167,6 @@ const Timer = () => {
   };
 
   const decreaseTimer = () => {
-    console.log("pressed");
     if (finished) {
       setMinutes((prevTime) => {
         return prevTime - 5;
@@ -242,12 +242,12 @@ const Timer = () => {
         {finished ? (
           <Image
             source={require("../assets/images/cibo-finito.png")}
-            style={{ width: 150, height: 150 }}
+            style={styles.bowl}
           />
         ) : (
           <Image
             source={require("../assets/images/cibo-pieno.png")}
-            style={{ width: 150, height: 150 }}
+            style={styles.bowl}
           />
         )}
       </View>
@@ -269,17 +269,23 @@ export default Timer;
 
 const styles = StyleSheet.create({
   timerStyle: {
-    fontSize: 40,
+    fontSize: verticalScale(40),
     fontWeight: "bold",
     backgroundColor: "#813405",
     color: "white",
     verticalAlign: "middle",
     marginVertical: 0,
   },
+  bowl: {
+    width: horizontalScale(110),
+    height: verticalScale(110),
+    resizeMode: "contain",
+  },
   timer: {
     flexDirection: "row",
     backgroundColor: "#813405",
-    height: 40,
+    height: verticalScale(40),
+    resizeMode: "contain",
   },
   buttonContainer: {
     flex: 1,
@@ -319,8 +325,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
     resizeMode: "contain",
     zIndex: 100,
-    height: 40,
-    width: 40,
+    width: horizontalScale(35),
+    height: verticalScale(35),
   },
 
   arrowleft: {
@@ -329,14 +335,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     resizeMode: "contain",
     zIndex: 100,
-    height: 40,
-    width: 40,
+    width: horizontalScale(35),
+    height: verticalScale(35),
   },
   trasparentView: {
     backgroundColor: "transparent",
   },
   text: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "bold",
     color: "black",
   },
