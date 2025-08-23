@@ -21,7 +21,13 @@ export default function TabLayout() {
     <SafeAreaProvider>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? "dark"].tint,
+          tabBarActiveTintColor: "#000000ff", // colore icona selezionata
+          tabBarInactiveTintColor: "#a7881aff", // colore icona non selezionata
+          tabBarStyle: {
+            backgroundColor: "#fbcb1c", // colore navbar
+            paddingTop: 15,               // margine sopra la navbar
+            height: 70,                  // puoi alzare l'altezza se vuoi
+          },
           headerShown: false,
         }}
       >
