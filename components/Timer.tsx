@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "./Themed";
 import { MoneyContext } from "../context/money.context";
@@ -9,43 +9,27 @@ import { SoundContext } from "../context/sound.context";
 import { verticalScale, horizontalScale } from "../metrics";
 
 const Timer = () => {
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-  const secondsRef = useRef(0);
-  const minutesRef = useRef(0);
-  const hoursRef = useRef(0);
-  const [finished, setFinished] = useState(true);
-  const finishedRef = useRef(true);
-  const [timeInterval, setTimeInterval] = useState<any>();
-  const studyMinutesRef = useRef(0);
-  const { money, setMoney } = React.useContext(MoneyContext);
-  const { sound, setSound } = React.useContext(SoundContext);
+  const [timeLeft, setTimeLeft] = useState(0); // tempo in secondi
+  const [running, setRunning] = useState(false);
+  const { money, setMoney } = useContext(MoneyContext);
+  const { sound } = useContext(SoundContext);
 
-  Audio.setAudioModeAsync({
-    allowsRecordingIOS: false,
-    playsInSilentModeIOS: true,
-    shouldDuckAndroid: true,
-    staysActiveInBackground: true,
-    playThroughEarpieceAndroid: false,
-  });
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const playSound = async () => {
-    try {
-      const { sound: playbackObject } = await Audio.Sound.createAsync(
-        require("../assets/sounds/success.mp3"),
-        { shouldPlay: true }
-      );
-      await playbackObject.replayAsync();
-    } catch (error) {
-      console.log("error playing sound");
-    }
+    if (!sound) return;
+    const { sound: s } = await Audio.Sound.createAsync(
+      require("../assets/sounds/success.mp3"),
+      { shouldPlay: true }
+    );
+    await s.replayAsync();
   };
 
   const storeData = async (value: number) => {
     try {
       await AsyncStorage.setItem("money", JSON.stringify(value));
-    } catch (e) {
+    }
+    catch (e) {
       console.log(e);
     }
   };
@@ -56,220 +40,117 @@ const Timer = () => {
       if (arrayOfStats === null) {
         await AsyncStorage.setItem("stats", JSON.stringify([stats]));
         return;
-      } else {
+      }
+      else {
         var parsedArray = JSON.parse(arrayOfStats);
         if (parsedArray) {
           parsedArray.push(stats);
           await AsyncStorage.setItem("stats", JSON.stringify(parsedArray));
         }
       }
-    } catch (e) {
+    }
+    catch (e) {
       console.log(e);
     }
   };
 
-  // Function to start the timer
-  const startTimer = () => {
-    if (
-      secondsRef.current === 0 &&
-      minutesRef.current === 0 &&
-      hoursRef.current === 0
-    ) {
-      console.log("cannot start");
-      return;
+  useEffect(() => {
+    if (running && timeLeft > 0) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && running) {
+      setRunning(false);
+      playSound();
+      const newStats = { time: intervalRef.current, day: new Date().toLocaleDateString(), };
+      const newMoney = money + Math.floor(timeLeft / 5);
+      storeStats(newStats); storeData(newMoney);
+      setMoney(newMoney);
     }
-    studyMinutesRef.current = hoursRef.current * 60 + minutesRef.current;
-    setFinished(false);
-    finishedRef.current = false;
 
-    setTimeInterval(
-      setInterval(() => {
-        if (secondsRef.current === 0 && minutesRef.current !== 0) {
-          setMinutes((prevTime) => {
-            return prevTime === 0 ? 0 : prevTime - 1;
-          });
-          minutesRef.current = minutesRef.current - 1;
-          setSeconds(60);
-          secondsRef.current = 60;
-        } else if (
-          secondsRef.current === 0 &&
-          minutesRef.current === 0 &&
-          hoursRef.current !== 0
-        ) {
-          setHours((prevTime) => {
-            return prevTime === 0 ? 0 : prevTime - 1;
-          });
-          hoursRef.current--;
-          setMinutes(60);
-          setSeconds(60);
-          secondsRef.current = 60;
-          minutesRef.current = 60;
-        } else if (
-          secondsRef.current === 0 &&
-          minutesRef.current === 0 &&
-          hoursRef.current === 0
-        ) {
-          if (finishedRef.current === false) {
-            const newStats = {
-              time: studyMinutesRef.current,
-              day: new Date().toLocaleDateString(),
-            };
-            storeStats(newStats);
-            storeData(money + studyMinutesRef.current / 5);
-            setMoney(money + studyMinutesRef.current / 5);
-            if (sound) {
-              playSound();
-            }
-            console.log(money + studyMinutesRef.current / 5);
-          }
-          setFinished(true);
-          finishedRef.current = true;
-        }
-        setSeconds((prevTime) => {
-          return prevTime === 0 ? 0 : prevTime - 1;
-        });
-        if (secondsRef.current !== 0) {
-          secondsRef.current = secondsRef.current - 1;
-        }
-      }, 1000)
-    );
-  };
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [running, timeLeft]);
 
-  // Function to pause the timer
-  const resetTimer = () => {
-    // Clear the interval to stop the timer from updating
-    clearInterval(timeInterval);
-    setFinished(true);
-    setSeconds(0);
-    secondsRef.current = 0;
-    setMinutes(0);
-    minutesRef.current = 0;
-    setHours(0);
-    hoursRef.current = 0;
-    finishedRef.current = true;
-  };
 
   const increaseTimer = () => {
-    if (finished && hoursRef.current !== 3) {
-      setMinutes((prevTime) => {
-        return prevTime + 5;
-      });
-      minutesRef.current = minutesRef.current + 5;
-      if (minutesRef.current === 60) {
-        setMinutes(0);
-        minutesRef.current = 0;
-        setHours((prevTime) => {
-          return prevTime + 1;
-        });
-        hoursRef.current++;
-      }
-    }
+    if (!running) setTimeLeft(prev => Math.min(prev + 5 * 60, 3 * 60 * 60));
   };
 
   const decreaseTimer = () => {
-    if (finished) {
-      setMinutes((prevTime) => {
-        return prevTime - 5;
-      });
-      minutesRef.current = minutesRef.current - 5;
-      if (minutesRef.current === -5 && hoursRef.current !== 0) {
-        setMinutes(55);
-        minutesRef.current = 55;
-        setHours((prevTime) => {
-          return prevTime - 1;
-        });
-        hoursRef.current--;
-      } else if (minutesRef.current === -5 && hoursRef.current === 0) {
-        setMinutes(0);
-        minutesRef.current = 0;
-      }
-    }
+    if (!running) setTimeLeft(prev => Math.max(prev - 5 * 60, 0));
   };
 
-  // Render the timer and buttons in the component
+  const startTimer = () => {
+    if (timeLeft > 0) setRunning(true);
+  };
+
+  const resetTimer = () => {
+    setRunning(false);
+    setTimeLeft(0);
+  };
+
+  const hours = Math.floor(timeLeft / 3600);
+  const minutes = Math.floor((timeLeft % 3600) / 60);
+  const seconds = timeLeft % 60;
+
+  const pad = (n: number) => n.toString().padStart(2, "0");
+
   return (
     <View style={styles.buttonContainer}>
       <View style={styles.timer}>
-        <TouchableOpacity onPress={decreaseTimer}>
-          <Image
-            source={require("../assets/images/arrow-down.png")}
-            style={styles.arrowright}
-          />
+        <TouchableOpacity
+          onPress={decreaseTimer}
+          disabled={timeLeft === 0 || running}
+          style={[
+            styles.arrowButton,
+            (timeLeft === 0 || running) && styles.disabledButton,
+          ]}
+        >
+          <Image source={require("../assets/images/arrow-down.png")} style={styles.arrowDown} />
         </TouchableOpacity>
+
         <Text style={styles.timerStyle}>
-          {hours === 0 ? "00" : null}
-          {hours === 1 ? "01" : null}
-          {hours === 2 ? "02" : null}
-          {hours === 3 ? "03" : null}
-          {hours === 4 ? "04" : null}
-          {hours === 5 ? "05" : null}
-          {hours === 6 ? "06" : null}
-          {hours === 7 ? "07" : null}
-          {hours === 8 ? "08" : null}
-          {hours === 9 ? "09" : null}
-          {hours > 9 ? hours : null}:{minutes === 0 ? "00" : null}
-          {minutes === 1 ? "01" : null}
-          {minutes === 2 ? "02" : null}
-          {minutes === 3 ? "03" : null}
-          {minutes === 4 ? "04" : null}
-          {minutes === 5 ? "05" : null}
-          {minutes === 6 ? "06" : null}
-          {minutes === 7 ? "07" : null}
-          {minutes === 8 ? "08" : null}
-          {minutes === 9 ? "09" : null}
-          {minutes > 9 ? minutes : null}:{seconds === 0 ? "00" : null}
-          {seconds === 1 ? "01" : null}
-          {seconds === 2 ? "02" : null}
-          {seconds === 3 ? "03" : null}
-          {seconds === 4 ? "04" : null}
-          {seconds === 5 ? "05" : null}
-          {seconds === 6 ? "06" : null}
-          {seconds === 7 ? "07" : null}
-          {seconds === 8 ? "08" : null}
-          {seconds === 9 ? "09" : null}
-          {seconds > 9 ? seconds : null}
+          {pad(hours)}:{pad(minutes)}:{pad(seconds)}
         </Text>
 
-        <TouchableOpacity onPress={increaseTimer}>
-          <Image
-            source={require("../assets/images/arrow-up.png")}
-            style={styles.arrowleft}
-          />
+        <TouchableOpacity
+          onPress={increaseTimer}
+          disabled={running}
+          style={[styles.arrowButton, running && styles.disabledButton]}
+        >
+          <Image source={require("../assets/images/arrow-up.png")} style={styles.arrowUp} />
         </TouchableOpacity>
       </View>
       <AnimalsDisplayed />
-      <View style={styles.trasparentView}>
-        {finished ? (
-          <Image
-            source={require("../assets/images/cibo-finito.png")}
-            style={styles.bowl}
-          />
-        ) : (
-          <Image
-            source={require("../assets/images/cibo-pieno.png")}
-            style={styles.bowl}
-          />
-        )}
-      </View>
-      {finished ? (
-        <TouchableOpacity onPress={startTimer} style={styles.button}>
-          <Text style={styles.text}>Start</Text>
-        </TouchableOpacity>
-      ) : null}
-      {!finished ? (
+      {running ? (
+        <Image source={require("../assets/images/cibo-pieno.png")} style={styles.bowl} />
+      ) : (
+        <Image source={require("../assets/images/cibo-finito.png")} style={styles.bowl} />
+      )}
+      {running ? (
         <TouchableOpacity onPress={resetTimer} style={styles.buttonreset}>
           <Text style={styles.text}>Reset</Text>
         </TouchableOpacity>
-      ) : null}
+      ) : (
+        <TouchableOpacity onPress={startTimer} style={styles.button}>
+          <Text style={styles.text}>Start</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
+
 
 export default Timer;
 
 const styles = StyleSheet.create({
   timerStyle: {
-    fontSize: verticalScale(40),
+    fontSize: verticalScale(35),
     fontWeight: "bold",
     backgroundColor: "#813405",
     color: "white",
@@ -319,7 +200,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
   },
-  arrowright: {
+  arrowDown: {
     flexDirection: "row",
     marginTop: 8,
     marginRight: 10,
@@ -329,7 +210,7 @@ const styles = StyleSheet.create({
     height: verticalScale(35),
   },
 
-  arrowleft: {
+  arrowUp: {
     flexDirection: "row",
     marginTop: 8,
     marginLeft: 10,
@@ -338,6 +219,16 @@ const styles = StyleSheet.create({
     width: horizontalScale(35),
     height: verticalScale(35),
   },
+  arrowButton: {
+    flexDirection: "row",
+    resizeMode: "contain",
+    zIndex: 100,
+  },
+
+  disabledButton: {
+    opacity: 0.5, // più chiaro / grigio
+  },
+
   trasparentView: {
     backgroundColor: "transparent",
   },
