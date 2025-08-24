@@ -17,6 +17,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingTop: verticalScale(50),
-    backgroundColor: "#813405"
+    backgroundColor: "#A8643C"
   },
 });

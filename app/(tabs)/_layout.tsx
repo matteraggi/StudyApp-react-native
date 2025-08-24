@@ -1,8 +1,8 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
-import { Pressable, useColorScheme } from "react-native";
-import Colors from "../../constants/Colors";
+import { Tabs } from "expo-router";
+import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import CustomTabBarButton from "../../components/CustomTabBarButton";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -15,8 +15,6 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <SafeAreaProvider>
       <Tabs
@@ -25,10 +23,12 @@ export default function TabLayout() {
           tabBarInactiveTintColor: "#a7881aff", // colore icona non selezionata
           tabBarStyle: {
             backgroundColor: "#fbcb1c", // colore navbar
-            paddingTop: 15,               // margine sopra la navbar
-            height: 70,                  // puoi alzare l'altezza se vuoi
+            paddingTop: 15,
+            height: 70,
           },
           headerShown: false,
+          // 👇 usa il nostro componente custom
+          tabBarButton: (props) => <CustomTabBarButton {...props} />,
         }}
       >
         <Tabs.Screen
@@ -43,9 +43,7 @@ export default function TabLayout() {
           name="three"
           options={{
             title: "Stats",
-            tabBarIcon: ({ color }) => (
-              <TabBarIcon name="signal" color={color} />
-            ),
+            tabBarIcon: ({ color }) => <TabBarIcon name="signal" color={color} />,
             tabBarShowLabel: false,
           }}
         />
@@ -61,9 +59,7 @@ export default function TabLayout() {
           name="four"
           options={{
             title: "Study Music",
-            tabBarIcon: ({ color }) => (
-              <TabBarIcon name="music" color={color} />
-            ),
+            tabBarIcon: ({ color }) => <TabBarIcon name="music" color={color} />,
             tabBarShowLabel: false,
           }}
         />

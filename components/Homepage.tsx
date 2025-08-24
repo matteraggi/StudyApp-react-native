@@ -4,13 +4,14 @@ import Timer from "./Timer";
 import { MoneyContext } from "../context/money.context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "./Themed";
+import { verticalScale } from "../metrics";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "80%",
     alignItems: "center",
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   title: {
     fontSize: 40,
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   separator: {
-    marginBottom: 10,
+    marginBottom: verticalScale(10),
   },
   nav: {
     flexDirection: "row",
@@ -26,8 +27,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     verticalAlign: "top",
     width: "100%",
-    marginBottom: 15,
-    backgroundColor: "#813405",
+    marginBottom: verticalScale(10),
+    backgroundColor: "#A8643C",
   },
   moneyImage: {
     verticalAlign: "middle",
@@ -35,8 +36,8 @@ const styles = StyleSheet.create({
   money: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    backgroundColor: "#813405",
+    gap: verticalScale(10),
+    backgroundColor: "#A8643C",
   },
 });
 
@@ -59,14 +60,16 @@ export default function Homepage() {
     <View style={styles.container}>
       <View style={styles.nav}>
         <Image
-          source={require("../assets/images/studyfarm-logo.png")}
-          width={40}
+          source={require("../assets/images/study_farm.png")}
+          style={{ width: 160 }} // ✅ controlli qui le dimensioni
+          resizeMode="contain"              // opzionale: ridimensiona senza tagliare
         />
         <View style={styles.money}>
           <Text style={styles.title}>{money}</Text>
           <Image
             source={require("../assets/images/zampa-cane.png")}
-            width={40}
+            style={{ width: 40 }}
+            resizeMode="contain"
           />
         </View>
       </View>

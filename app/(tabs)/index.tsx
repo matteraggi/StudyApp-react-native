@@ -8,7 +8,7 @@ import { verticalScale } from "../../metrics";
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-        <Homepage />
+      <Homepage />
     </View>
   );
 }
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    paddingTop: verticalScale(50),
-    backgroundColor: "#813405",
+    paddingTop: verticalScale(15),
+    backgroundColor: "#A8643C",
   },
 });

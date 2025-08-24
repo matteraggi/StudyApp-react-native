@@ -326,12 +326,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     padding: 20,
     alignItems: "center",
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   separator: {
     height: verticalScale(100),
@@ -343,13 +343,12 @@ const styles = StyleSheet.create({
   },
   item: {
     verticalAlign: "middle",
-    horizontalAlign: "middle",
     padding: 20,
     marginHorizontal: 8,
     borderRadius: 40,
   },
   cost: {
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
     gap: 10,
     flex: 1,
     flexDirection: "row",
@@ -357,7 +356,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
   },
   image: {
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
     height: verticalScale(280),
     width: horizontalScale(280),
     resizeMode: "contain",
@@ -367,17 +366,17 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     borderColor: "#fff",
     borderWidth: 4,
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   image_container: {
     padding: 10,
     borderRadius: 40,
-    borderColor: "#813405",
+    borderColor: "#A8643C",
     borderWidth: 4,
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   button_container: {
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   button: {
     alignItems: "center",

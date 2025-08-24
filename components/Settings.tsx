@@ -34,11 +34,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   switch: {
     flexDirection: "row",
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   title: {
     fontSize: 30,

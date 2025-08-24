@@ -108,7 +108,7 @@ const Timer = () => {
           disabled={timeLeft === 0 || running}
           style={[
             styles.arrowButton,
-            (timeLeft === 0 || running) && styles.disabledButton,
+            (timeLeft === 0 || running) && styles.disabledArrow,
           ]}
         >
           <Image source={require("../assets/images/arrow-down.png")} style={styles.arrowDown} />
@@ -121,26 +121,40 @@ const Timer = () => {
         <TouchableOpacity
           onPress={increaseTimer}
           disabled={running}
-          style={[styles.arrowButton, running && styles.disabledButton]}
+          style={[styles.arrowButton, running && styles.disabledArrow]}
         >
           <Image source={require("../assets/images/arrow-up.png")} style={styles.arrowUp} />
         </TouchableOpacity>
       </View>
       <AnimalsDisplayed />
-      {running ? (
-        <Image source={require("../assets/images/cibo-pieno.png")} style={styles.bowl} />
-      ) : (
-        <Image source={require("../assets/images/cibo-finito.png")} style={styles.bowl} />
-      )}
-      {running ? (
-        <TouchableOpacity onPress={resetTimer} style={styles.buttonreset}>
-          <Text style={styles.text}>Reset</Text>
+      <View style={styles.controlsContainer}>
+        <TouchableOpacity
+          onPress={resetTimer}
+          disabled={timeLeft === 0 || !running}
+          style={[styles.controlButton, (timeLeft === 0 || !running) && styles.disabledButton]}
+        >
+          <Image
+            source={require("../assets/images/square.png")} // usa la tua icona quadrata
+            style={styles.controlIcon}
+          />
         </TouchableOpacity>
-      ) : (
-        <TouchableOpacity onPress={startTimer} style={styles.button}>
-          <Text style={styles.text}>Start</Text>
+        {running ? (
+          <Image source={require("../assets/images/cibo-pieno.png")} style={styles.bowl} />
+        ) : (
+          <Image source={require("../assets/images/cibo-finito.png")} style={styles.bowl} />
+        )}
+        <TouchableOpacity
+          onPress={startTimer}
+          disabled={running || timeLeft === 0}
+          style={[styles.controlButton, (running || timeLeft === 0) && styles.disabledButton]}
+        >
+          <Image
+            source={require("../assets/images/triangle.png")} // usa la tua icona triangolo
+            style={styles.controlIcon}
+          />
         </TouchableOpacity>
-      )}
+      </View>
+
     </View>
   );
 };
@@ -149,10 +163,38 @@ const Timer = () => {
 export default Timer;
 
 const styles = StyleSheet.create({
+  controlsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "50%", // larghezza della riga dei pulsanti
+    marginTop: verticalScale(30),
+    alignItems: "center",
+    backgroundColor: "#A8643C",
+    gap: horizontalScale(30)
+  },
+  controlButton: {
+    padding: horizontalScale(10),
+    borderRadius: 10,
+    backgroundColor: "#fbcb1c", // colore attivo dei pulsanti
+  },
+  controlIcon: {
+    width: horizontalScale(25),
+    height: verticalScale(25),
+    resizeMode: "contain",
+  },
+  disabledButton: {
+    opacity: 0.5, // grigio / disattivato
+    backgroundColor: "#ccc",
+  },
+
+  disabledArrow: {
+    opacity: 0.5, // grigio / disattivato
+  },
+
   timerStyle: {
     fontSize: verticalScale(35),
     fontWeight: "bold",
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
     color: "white",
     verticalAlign: "middle",
     marginVertical: 0,
@@ -164,7 +206,7 @@ const styles = StyleSheet.create({
   },
   timer: {
     flexDirection: "row",
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
     height: verticalScale(40),
     resizeMode: "contain",
   },
@@ -172,7 +214,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     marginTop: 2,
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   button: {
     alignSelf: "center",
@@ -219,14 +261,11 @@ const styles = StyleSheet.create({
     width: horizontalScale(35),
     height: verticalScale(35),
   },
+
   arrowButton: {
     flexDirection: "row",
     resizeMode: "contain",
     zIndex: 100,
-  },
-
-  disabledButton: {
-    opacity: 0.5, // più chiaro / grigio
   },
 
   trasparentView: {

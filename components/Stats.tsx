@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
   },
   separator: {
     marginBottom: 30,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   dailystatsview: {
-    backgroundColor: "#813405",
+    backgroundColor: "#A8643C",
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
