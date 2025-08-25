@@ -1,0 +1,6 @@
+- [ ] stats nella parte bassa della home (streak, pomodori totali)
+- [ ] redesign dello shop (scorrimento un minimo bloccato, sfondo nero opaco trasparente dietro foto per aumentare contrasto)
+- [ ] animali (vedere se fare AI, se integrarla in modo generativo, oppure se aggiungere png e basta)
+- [ ] redesign delle stats (con scritte più info possibili: pomodori fatti al giorno, streak, numero di sessioni e durata, ...)
+- [ ] fare pagina musica e impostazioni
+- [ ] aggiungere impostazioni timer (boh)

@@ -9,10 +9,11 @@ import { SoundContext } from "../context/sound.context";
 import { verticalScale, horizontalScale } from "../metrics";
 
 const Timer = () => {
-  const [timeLeft, setTimeLeft] = useState(0); // tempo in secondi
+  const [timeLeft, setTimeLeft] = useState(0);
   const [running, setRunning] = useState(false);
   const { money, setMoney } = useContext(MoneyContext);
   const { sound } = useContext(SoundContext);
+  const [initialTime, setInitialTime] = useState(0);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -87,6 +88,7 @@ const Timer = () => {
 
   const startTimer = () => {
     if (timeLeft > 0) setRunning(true);
+    setInitialTime(timeLeft);
   };
 
   const resetTimer = () => {
@@ -139,10 +141,24 @@ const Timer = () => {
           />
         </TouchableOpacity>
         {running ? (
-          <Image source={require("../assets/images/cibo-pieno.png")} style={styles.bowl} />
+          timeLeft > initialTime / 2 ? (
+            <Image
+              source={require("../assets/images/cibo-pieno.png")}
+              style={styles.bowl}
+            />
+          ) : (
+            <Image
+              source={require("../assets/images/cibo-meta.png")}
+              style={styles.bowl}
+            />
+          )
         ) : (
-          <Image source={require("../assets/images/cibo-finito.png")} style={styles.bowl} />
+          <Image
+            source={require("../assets/images/cibo-finito.png")}
+            style={styles.bowl}
+          />
         )}
+
         <TouchableOpacity
           onPress={startTimer}
           disabled={running || timeLeft === 0}

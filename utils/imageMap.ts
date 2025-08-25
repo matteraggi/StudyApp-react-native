@@ -1,0 +1,17 @@
+export const imageMap: Record<string, any> = {
+    "labrador-il-classico": require("../assets/images/labrador-il-classico.png"),
+    "golden-retriever-cucciolo": require("../assets/images/golden-retriever-cucciolo.png"),
+    "carlino-il-simpatico": require("../assets/images/carlino-il-simpatico.png"),
+    "pinguino-san-valentino": require("../assets/images/pinguino-san-valentino.png"),
+    "bassotto-hot-dog": require("../assets/images/bassotto-hot-dog.png"),
+    "bulldog-bodyguard": require("../assets/images/bulldog-bodyguard.png"),
+    "carica-dei-104": require("../assets/images/carica-dei-104.png"),
+    "carlino-lo-stile": require("../assets/images/carlino-lo-stile.png"),
+    "golden-retriever-cravattato": require("../assets/images/golden-retriever-cravattato.png"),
+    "golden-retriever-leggendario": require("../assets/images/golden-retriever-leggendario.png"),
+    "golden-retriever-san-valentino": require("../assets/images/golden-retriever-san-valentino.png"),
+    "king-dobermann": require("../assets/images/king-dobermann.png"),
+    "labrador-incazzato": require("../assets/images/labrador-incazzato.png"),
+    "labrador-natale": require("../assets/images/labrador-natale.png"),
+    "shiba-inu": require("../assets/images/shiba-inu.png"),
+};
