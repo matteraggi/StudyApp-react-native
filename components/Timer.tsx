@@ -4,9 +4,12 @@ import { Text, View } from "./Themed";
 import { MoneyContext } from "../context/money.context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AnimalsDisplayed from "./AnimalsDisplayed";
-import { Audio } from "expo-av";
+import { useAudioPlayer } from 'expo-audio';
 import { SoundContext } from "../context/sound.context";
 import { verticalScale, horizontalScale } from "../metrics";
+import { storage } from "../utils/storage";
+
+const soundAudio = require('../assets/sounds/success.mp3');
 
 const Timer = () => {
   const [timeLeft, setTimeLeft] = useState(0);
@@ -14,46 +17,35 @@ const Timer = () => {
   const { money, setMoney } = useContext(MoneyContext);
   const { sound } = useContext(SoundContext);
   const [initialTime, setInitialTime] = useState(0);
+  const player = useAudioPlayer(soundAudio);
+
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const playSound = async () => {
-    if (!sound) return;
-    const { sound: s } = await Audio.Sound.createAsync(
-      require("../assets/sounds/success.mp3"),
-      { shouldPlay: true }
-    );
-    await s.replayAsync();
+  const playSound = () => {
+    player.seekTo(0);
+    player.play();
   };
 
   const storeData = async (value: number) => {
     try {
-      await AsyncStorage.setItem("money", JSON.stringify(value));
-    }
-    catch (e) {
+      await storage.set("money", value);
+    } catch (e) {
       console.log(e);
     }
   };
 
+
   const storeStats = async (stats: any) => {
     try {
-      var arrayOfStats = await AsyncStorage.getItem("stats");
-      if (arrayOfStats === null) {
-        await AsyncStorage.setItem("stats", JSON.stringify([stats]));
-        return;
-      }
-      else {
-        var parsedArray = JSON.parse(arrayOfStats);
-        if (parsedArray) {
-          parsedArray.push(stats);
-          await AsyncStorage.setItem("stats", JSON.stringify(parsedArray));
-        }
-      }
-    }
-    catch (e) {
-      console.log(e);
+      const savedStats = await storage.get<any[]>("stats", []);
+      savedStats.push(stats);
+      await storage.set("stats", savedStats);
+    } catch (e) {
+      console.log("Error in storeStats:", e);
     }
   };
+
 
   useEffect(() => {
     if (running && timeLeft > 0) {
@@ -63,11 +55,18 @@ const Timer = () => {
     } else if (timeLeft === 0 && running) {
       setRunning(false);
       playSound();
-      const newStats = { time: intervalRef.current, day: new Date().toLocaleDateString(), };
-      const newMoney = money + Math.floor(timeLeft / 5);
-      storeStats(newStats); storeData(newMoney);
+      const newStats = {
+        time: initialTime,
+        day: new Date().toISOString().split("T")[0],
+      };
+
+      const newMoney = money + Math.floor(initialTime / 300);
+
+      storeStats(newStats);
+      storeData(newMoney);
       setMoney(newMoney);
     }
+
 
     return () => {
       if (intervalRef.current) {

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Image, StyleSheet } from "react-native";
 import Timer from "./Timer";
 import { MoneyContext } from "../context/money.context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "./Themed";
 import { verticalScale } from "../metrics";
+import { storage } from "../utils/storage";
 
 const styles = StyleSheet.create({
   container: {
@@ -43,19 +44,21 @@ const styles = StyleSheet.create({
 
 export default function Homepage() {
   const { money, setMoney } = React.useContext(MoneyContext);
+
   const getData = async () => {
     try {
-      const value = await AsyncStorage.getItem("money");
-      if (value !== null) {
-        setMoney(JSON.parse(value));
-      }
+      const value = await storage.get<number>("money", 0); // <- serve await
+
+      setMoney(value);
     } catch (e) {
       console.log(e);
     }
   };
-  React.useEffect(() => {
+
+  useEffect(() => {
     getData();
   }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
