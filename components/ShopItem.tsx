@@ -75,15 +75,29 @@ const ShopItem = ({
 
                 <View style={styles.button_container}>
                     {animalIHave.includes(item.id) ? (
-                        <Pressable onPress={selectAnimal} style={styles.button}>
-                            <Text style={styles.button_text}>Select</Text>
-                        </Pressable>
+                        selectedId === item.id ? (
+                            // Se l’elemento è selezionato, mostra tasto grigio non cliccabile
+                            <Pressable style={[styles.button, styles.buttonSelected]} disabled>
+                                <Text style={styles.button_text}>Selected</Text>
+                            </Pressable>
+                        ) : (
+                            // Altrimenti mostra il tasto Select cliccabile
+                            <Pressable onPress={selectAnimal} style={styles.button}>
+                                <Text style={styles.button_text}>Select</Text>
+                            </Pressable>
+                        )
                     ) : (
-                        <Pressable onPress={buyAnimal} style={styles.button}>
+                        // Se non è stato comprato, mostra Buy
+                        <Pressable
+                            onPress={buyAnimal}
+                            style={[styles.button, money < item.cost && styles.buttonDisabled]}
+                            disabled={money < item.cost}
+                        >
                             <Text style={styles.button_text}>Buy</Text>
                         </Pressable>
                     )}
                 </View>
+
             </View>
         </View>
     );
@@ -142,6 +156,14 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         elevation: 3,
         backgroundColor: "#fff",
+    },
+    buttonDisabled: {
+        backgroundColor: "#ccc",   // grigio chiaro
+        opacity: 0.6,              // leggermente trasparente
+    },
+    buttonSelected: {
+        backgroundColor: "#888", // colore diverso per Selected
+        opacity: 0.7,
     },
     button_text: {
         fontSize: 16,
